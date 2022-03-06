@@ -9,105 +9,9 @@ from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 from sklearn.pipeline import Pipeline
 from sklearn.metrics import classification_report
 
-def naive_bayes_count(train, test):
-    """Train a Naive Bayes classifier with count vectorizer.
-    :param training set. pandas Dataframe.
-    :param test set. pandas Dataframe.
-    :param model save path. str. None for don't save.
-    :return sklearn model.
-    """
-    print('Training Naive Bayes model with unigram CountVectorize...')
-    # Extract documents and labels.
-    docs_train = train['comment']
-    labels_train = train['attitude']
-    docs_test = test['comment']
-    labels_test = test['attitude']
-    # Start up a Pipeline
-    pipe = Pipeline([
-        ('vec', CountVectorizer()),
-        ('nb', MultinomialNB())
-    ])
-    # Train the model.
-    pipe.fit(docs_train, labels_train)
-    # Do prediction.
-    y_pred = pipe.predict(docs_test)
-    # Get report.
-    print(classification_report(labels_test, y_pred))
+from joblib import dump
 
-def naive_bayes_tfidf(train, test):
-    """Train a Naive Bayes classifier with Tf-Idf vectorizer.
-    :param training set. pandas Dataframe.
-    :param test set. pandas Dataframe.
-    :param model save path. str. None for don't save.
-    :return sklearn model.
-    """
-    print('Training Naive Bayes model with unigram TfidfVectorize...')
-    # Extract documents and labels.
-    docs_train = train['comment']
-    labels_train = train['attitude']
-    docs_test = test['comment']
-    labels_test = test['attitude']
-    # Start up a Pipeline
-    pipe = Pipeline([
-        ('vec', TfidfVectorizer()),
-        ('nb', MultinomialNB())
-    ])
-    # Train the model.
-    pipe.fit(docs_train, labels_train)
-    # Do prediction.
-    y_pred = pipe.predict(docs_test)
-    # Get report.
-    print(classification_report(labels_test, y_pred))
-
-def logistic_regression_count(train, test):
-    """Train a logistic regression classifier with count vectorizer.
-    :param training set. pandas Dataframe.
-    :param test set. pandas Dataframe.
-    :param model save path. str. None for don't save.
-    :return sklearn model.
-    """
-    print('Training Logistic Regression model with unigram CountVectorize...')
-    # Extract documents and labels.
-    docs_train = train['comment']
-    labels_train = train['attitude']
-    docs_test = test['comment']
-    labels_test = test['attitude']
-    # Start up a Pipeline
-    pipe = Pipeline([
-        ('vec', CountVectorizer()),
-        ('log', LogisticRegression())
-    ])
-    # Train the model.
-    pipe.fit(docs_train, labels_train)
-    # Do prediction.
-    y_pred = pipe.predict(docs_test)
-    # Get report.
-    print(classification_report(labels_test, y_pred))
-
-def logistic_regression_tfidf(train, test):
-    """Train a logistic regression classifier with Tf-idf vectorizer.
-    :param training set. pandas Dataframe.
-    :param test set. pandas Dataframe.
-    :param model save path. str. None for don't save.
-    :return sklearn model.
-    """
-    print('Training Logistic Regression model with unigram TfidfVectorize...')
-    # Extract documents and labels.
-    docs_train = train['comment']
-    labels_train = train['attitude']
-    docs_test = test['comment']
-    labels_test = test['attitude']
-    # Start up a Pipeline
-    pipe = Pipeline([
-        ('vec', TfidfVectorizer()),
-        ('log', LogisticRegression())
-    ])
-    # Train the model.
-    pipe.fit(docs_train, labels_train)
-    # Do prediction.
-    y_pred = pipe.predict(docs_test)
-    # Get report.
-    print(classification_report(labels_test, y_pred))
+from pre_process import split
 
 def logistic_regression_count_bigram(train, test):
     """Train a logistic regression classifier with count vectorizer.
@@ -116,12 +20,12 @@ def logistic_regression_count_bigram(train, test):
     :param model save path. str. None for don't save.
     :return sklearn model.
     """
-    print('Training Logistic Regression model with biigram CountVectorize...')
+    print('Training Logistic Regression model with bigram CountVectorize...')
     # Extract documents and labels.
-    docs_train = train['comment']
-    labels_train = train['attitude']
-    docs_test = test['comment']
-    labels_test = test['attitude']
+    docs_train = train['text']
+    labels_train = train['label']
+    docs_test = test['text']
+    labels_test = test['label']
     # Start up a Pipeline
     pipe = Pipeline([
         ('vec', CountVectorizer(ngram_range=(1,2))),
@@ -133,6 +37,7 @@ def logistic_regression_count_bigram(train, test):
     y_pred = pipe.predict(docs_test)
     # Get report.
     print(classification_report(labels_test, y_pred))
+    dump(pipe, "count_model.pkl")
 
 def logistic_regression_tfidf_bigram(train, test):
     """Train a logistic regression classifier with count vectorizer.
@@ -141,12 +46,12 @@ def logistic_regression_tfidf_bigram(train, test):
     :param model save path. str. None for don't save.
     :return sklearn model.
     """
-    print('Training Logistic Regression model with biigram CountVectorize...')
+    print('Training Logistic Regression model with bigram TfidfVectorizer...')
     # Extract documents and labels.
-    docs_train = train['comment']
-    labels_train = train['attitude']
-    docs_test = test['comment']
-    labels_test = test['attitude']
+    docs_train = train['text']
+    labels_train = train['label']
+    docs_test = test['text']
+    labels_test = test['label']
     # Start up a Pipeline
     pipe = Pipeline([
         ('vec', TfidfVectorizer(ngram_range=(1,2))),
@@ -158,4 +63,9 @@ def logistic_regression_tfidf_bigram(train, test):
     y_pred = pipe.predict(docs_test)
     # Get report.
     print(classification_report(labels_test, y_pred))
+    dump(pipe, "tfidf_model.pkl")
 
+if __name__ == '__main__':
+    train, test = split('G:\\machine learning\\Assign2\\', True, 'G:\\machine learning\\Assign2\\')
+    logistic_regression_count_bigram(train, test)
+    logistic_regression_tfidf_bigram(train, test)

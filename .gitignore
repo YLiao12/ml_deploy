@@ -1,2 +1,5 @@
 IEMS5780_2022Spring_02_MachineLearning.pdf
 *.pdf
+Assign2/__pycache__/pre_process.cpython-38.pyc
+*.pyc
+*.csv
