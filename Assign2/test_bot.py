@@ -1,3 +1,5 @@
+# Yongqing LIAO 1155161159
+
 import time
 from telegram.ext.updater import Updater
 from telegram.update import Update
@@ -64,7 +66,8 @@ def analyse(update: Update, context: CallbackContext):
 if __name__ == "__main__":
     
     # Provide your bot's token
-    updater = Updater("5192942243:AAFWOLvMIV_QLjRMmERIC8LDh2PJ_O1Lt3k", use_context=True, request_kwargs={'proxy_url': 'socks5://127.0.0.1:1080/'})
+    # , request_kwargs={'proxy_url': 'socks5://127.0.0.1:1080/'}
+    updater = Updater("5192942243:AAFWOLvMIV_QLjRMmERIC8LDh2PJ_O1Lt3k", use_context=True)
 
     # In assignment, if you need to load the model, load it here
 
